@@ -48,9 +48,9 @@
 <body>
 <?php
 	if(isset($_SESSION["USER_ID"]))
-		print_menu_param(array("index.php", "enigma.php", "edit.php?i=".$_GET["i"] , "login.php?d=1", "user.php"), array("Home", "Enigma", "Modifica", "Disconnetti", "Profilo"));
+		print_menu_param(array("index.php", "enigma.php", "https://gitlab.com/EnigmaXS/enigma-machine", "edit.php?i=".$_GET["i"] , "login.php?d=1", "user.php"), array("Home", "Enigma", "Source Code", "Modifica", "Disconnetti", "Profilo"));
 	else
-		print_menu_param(array("index.php", "enigma.php", "login.php"), array("Home", "Enigma", "Accedi"));
+		print_menu_param(array("index.php", "enigma.php", "https://gitlab.com/EnigmaXS/enigma-machine", "login.php"), array("Home", "Enigma", "Source Code", "Accedi"));
 ?>
 </br>
 <h1><?php echo $row["nome"]; ?></h1>

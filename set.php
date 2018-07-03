@@ -10,9 +10,9 @@ function print_menu_param($links, $texts)
 function print_menu()
 {
 	if(isset($_SESSION["USER_ID"]))
-		print_menu_param(array("index.php", "enigma.php", "login.php?d=1", "user.php"), array("Home", "Enigma", "Disconnetti", "Profilo"));
+		print_menu_param(array("index.php", "enigma.php", "https://gitlab.com/EnigmaXS/enigma-machine", "login.php?d=1", "user.php"), array("Home", "Enigma", "Source Code", "Disconnetti", "Profilo"));
 	else
-		print_menu_param(array("index.php", "enigma.php", "login.php"), array("Home", "Enigma", "Accedi"));
+		print_menu_param(array("index.php", "enigma.php",  "https://gitlab.com/EnigmaXS/enigma-machine", "login.php"), array("Home", "Enigma", "Source Code", "Accedi"));
 }
 function print_footer()
 {

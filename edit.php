@@ -90,7 +90,7 @@
  </head>
  <body>
 
-<?php print_menu_param(array("index.php", "enigma.php", "materia.php?i=".$mat, "login.php?d=1", "user.php"), array("Home", "Enigma", "Ritorna alla pagina", "Disconnetti", "Profilo"));?>
+<?php print_menu_param(array("index.php", "enigma.php", "https://gitlab.com/EnigmaXS/enigma-machine", "materia.php?i=".$mat, "login.php?d=1", "user.php"), array("Home", "Enigma", "Source Code", "Ritorna alla pagina", "Disconnetti", "Profilo"));?>
 </div>
  <form action="edit.php" method="POST" enctype="multipart/form-data">
  <input type="text" name="nome" value="<?php echo $row["nome"]; ?>">
