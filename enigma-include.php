@@ -1,12 +1,24 @@
 <?php
 
-$GLOBALS["ref"]=array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25);
-$GLOBALS["rot"]=array(array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25),
-			array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25),
-			array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25));
-$GLOBALS["pos"]=array(0,0,0);
-$GLOBALS["fine"]=false;
+$GLOBALS["ref"] = "YRUHQSLDPXNGOKMIEBFZCWVJAT";
 
+function creaSessione()
+{
+	require "db.php";
+	$ID = 0;
+	while(TRUE)
+	{
+		$ID = mt_rand();
+		if($conn->query("INSERT INTO sessione (ID)  VALUES (".$ID.")") == TRUE)
+			break;
+	}
+	
+	$conn->close();
+	return $ID;
+}
+
+
+/*
 function genRotore()
 {
 	$i=0;
@@ -15,99 +27,135 @@ function genRotore()
 		while($i < 26)
 		{
 			$buffer=mt_rand(0,25);
-			if(!in_array($buffer,$GLOBALS["rot"][$k]))
+			if(!in_array($buffer,$_SESSION["rot"][$k]))
 			{
-				$GLOBALS["rot"][$k][$i++] = $buffer;
+				$_SESSION["rot"][$k][$i++] = $buffer;
 			}
 		}
+	}
+}
+*/
+
+
+function ruota()
+{
+	/* Avanzare il primo rotore */
+	$buffer = $_SESSION["rot"][0][0];
+	
+	for($i = 0; $i < 25; $i++)
+		$_SESSION["rot"][0][$i] = $_SESSION["rot"][0][$i+1];
+		
+	$_SESSION["rot"][0][25] = $buffer;
+
+	/* Controlla se deve avanzare il secondo e il terzo rotore */
+	if (ord($_SESSION["rot"][0][0]) == 'Z')
+	{
+		$buffer = $_SESSION["rot"][1][0];
+	
+		for($i = 0; $i < 25; $i++)
+			$_SESSION["rot"][1][$i] = $_SESSION["rot"][1][$i+1];
+			
+		$_SESSION["rot"][1][25] = $buffer;
+	}
+	
+	if (ord($_SESSION["rot"][1][0]) == 'Z')
+	{
+		$buffer = $_SESSION["rot"][2][0];
+	
+		for($i = 0; $i < 25; $i++)
+			$_SESSION["rot"][2][$i] = $_SESSION["rot"][2][$i+1];
+			
+		$_SESSION["rot"][2][25] = $buffer;
 	}
 }
 
 function cifra($c)
 {
-    if($c == ' ')
-        return $c;
+    if($c == 32 || $c == 43)
+        return 32;
     if (!ctype_alpha($c))
         return -1;
-
     $c = $c - 65;
-
+    
     /* Primo giro dei rotori 0-3 */
     for($i = 0; $i < 3; $i++)
     {
-		$c = $c + $GLOBALS["pos"][$i];
-		if ($c>25)
-			$c = $c - 26;
-		
-		$c = $GLOBALS["rot"][$i][$c];
-		
+		$c = ord($_SESSION["rot"][$i][$c]) - 65;
     }
-
+    
     /* Processo del Reflettore */
-    $c=$GLOBALS["ref"][$c];
-
+    $c=ord($GLOBALS["ref"][$c]) - 65;
+    
     /* Secondo giro dei rotori 3-0 */
     for ($i = 2; $i >= 0; $i--)
     {   
-		$c = $c + $GLOBALS["pos"][$i];
-		if ($c>25)
-			$c = $c - 26;
-		
         for($j=0; $j < 26; $j++)
-			if(($GLOBALS["rot"][$i]) == $c)
+			if((ord($_SESSION["rot"][$i][$j]) - 65) == $c)
+			{
 				$c=$j;
+				break;
+			}
     }
-
-        /* Avanzare il primo rotore */
-        $GLOBALS["pos"][0]++;
-
-        /* Controlla se deve avanzare il secondo e il terzo rotore */
-        if ($GLOBALS["fine"])
-        {
-            /* Controlla se deve avanzare il secondo rotore */
-            $GLOBALS["pos"][1]++;
-            $GLOBALS["pos"][2]++;
-            /* $GLOBALS["fine"]=true se anche il terzo rotore verrà avanzato */
-            $GLOBALS["fine"]=false;
-        }
-
-
-        if ($GLOBALS["pos"][0] > 25)
-        {
-            $GLOBALS["pos"][1]++;
-            if ($GLOBALS["pos"][1] > 25)
-                $GLOBALS["fine"]=true;
-        }
+    
     return $c;
 }
 
-function cifra_stringa($testo)
+function scambio($testo, $sca)
 {
-	$testo=strtoupper($testo);
+	$len = strlen($sca);
+	if(($sca % 2) != 0)
+		return $testo;
+		
+	for($i=0; $i < strlen($testo); $i++)
+		for($k=0; $k < $len; $k+=2)
+			if($testo[$i] == $sca[$k])
+				$testo[$i] = $sca[$k+1];
+				
+	return $testo;
+}
+
+function cifra_stringa($rot1, $rot2, $rot3, $pos1, $pos2, $pos3, $testo)
+{
+	require "db.php";
 	$len=strlen($testo);
 	for($i = 0; $i < $len; $i++) {
 		$buffer = cifra(ord($testo[$i]));
+		if($buffer == 32)
+			$offset[] = ' ';
+		ruota();
 		if($buffer >= 0 && $buffer <= 25)
-			$offset[$i] = chr($buffer + 65);
+			$offset[] = chr($buffer + 65);
     }
     
-    if(isset($offset))
-		return implode($offset);
+    $offset = implode($offset);
+    if($conn->query("INSERT INTO cifra (posizione1, posizione2, posizione3, chiaro, cifrato, fk_rotori1, fk_rotori2, fk_rotori3, fk_sessione)  
+    VALUES (".$pos1.",".$pos2.",".$pos3.",'".$testo."','".$offset."',".$rot1.",".$rot2.",".$rot3.",".$_SESSION["ID"].")") != TRUE)
+		echo "Error: ". $conn->error;
+    $conn->close();
+    
+	return $offset;
 
 }
 
-function posizione_rotori($r1, $r2, $r3)
+function rotori($rot1, $rot2, $rot3, $pos1, $pos2, $pos3)
 {
-	$GLOBALS["pos"][0]=$r1;
-	$GLOBALS["pos"][1]=$r2;
-	$GLOBALS["pos"][2]=$r3;
-}
+	require "db.php";
+	$v[0] = $rot1; $p[0] = $pos1;
+	$v[1] = $rot2; $p[1] = $pos2;
+	$v[2] = $rot3; $p[2] = $pos3;
 
-function mostra_rotore($num)
-{
-	for($i = 0; $i < 26; $i++)
+	for($i = 0; $i < 3; $i++)
 	{
-		echo chr($GLOBALS["rot"][$num][$i] + 65);
+		$query = $conn->query("SELECT valore FROM rotori WHERE ID = ".$v[$i]);
+		$row = $query->fetch_assoc();
+		
+		$a = substr($row["valore"], $p[$i]);
+		$b = substr($row["valore"], 0, $p[$i]);
+		
+		$offset[] = $a . $b;
 	}
+	$conn->close();
+	return $offset;
 }
+
 ?>
