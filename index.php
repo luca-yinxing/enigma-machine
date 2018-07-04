@@ -1,6 +1,8 @@
 <?php
 	session_start();
-	include "set.php";
+	include 'set.php';
+	require 'db.php';
+	$query = $conn->query("SELECT ID, nome, argomento, immagine FROM materie");
 ?>
 <html>
 <head>
@@ -10,7 +12,12 @@
 <link rel="stylesheet" href="styles/xsoftware.css">
 </head>
 <body>
-<?php print_menu(); ?>
+<?php
+	if(isset($_SESSION["USER_ID"]))
+		print_menu_param(array("index.php", "enigma.php", "https://gitlab.com/EnigmaXS/enigma-machine", "edit-index.php", "login.php?d=1", "user.php"), array("Home", "Enigma", "Source Code", "Modifica", "Disconnetti", "Profilo"));
+	else
+		print_menu_param(array("index.php", "enigma.php", "https://gitlab.com/EnigmaXS/enigma-machine", "login.php"), array("Home", "Enigma", "Source Code", "Accedi"));
+?>
     <h1>
      <u>Mappa concettuale <i>(su sito xsoftware.eu/esame)</i></u>  
     </h1>
@@ -18,34 +25,19 @@
      Luca Gasperini - Classe VCi 
     </h1>
     
-    
-
-<div class="gallery cf">
+<div class='gallery cf'>
 <h2>Seconda Guerra Mondiale</h2>
-  <div class="gallery-element">
-    <a href="materia.php?i=2"><img class="gallery-image-resize" src="img/giuseppe-ungaretti.jpg"/></a>
-    <div class="sub">Italiano:</br>Giuseppe Ungaretti</div>
-  </div>
-  <div class="gallery-element">
-    <a href="materia.php?i=1"><img class="gallery-image-resize" src="img/soldati-italiani.jpg"/></a>
-    <div class="sub">Storia:</br>Italia in guerra</div>
-  </div>
-  <div class="gallery-element">
-    <a href="materia.php?i=5"><img class="gallery-image-resize" src="img/alan-turing.jpg"/></a>
-    <div class="sub">Inglese:</br>Alan Turing</div>
-  </div>
-    <div class="gallery-element">
-    <a href="materia.php?i=3"><img class="gallery-image-resize" src="img/olimpiadi_berlino.jpg"/></a>
-    <div class="sub">Scienze Motorie:</br>Olimpiadi del 1936</div>
-  </div>
-  <div class="gallery-element">
-     <a href="materia.php?i=4"><img class="gallery-image-resize" src="img/robert-oppenheimer.jpg"/></a>
-     <div class="sub">Gestione Progetti:</br>Robert Oppenheimer</div>
-  </div>
-  <div class="gallery-element">
-    <a href="materia.php?i=6"><img class="gallery-image-resize" src="img/vigenere-square.jpg"/></a>
-    <div class="sub">Matematica:</br>Calcolo Combinatorio</div>
-  </div>
+<?php
+for($i=0; $i < $query->num_rows; $i++)
+{
+$row = $query->fetch_assoc();
+echo "
+  <div class='gallery-element'>
+    <a href='materia.php?i=".$row["ID"]."'><img class='gallery-image-resize' src='".$row["immagine"]."'/></a>
+    <div class='sub'>".$row["nome"].":</br>".$row["argomento"]."</div>
+  </div>";
+  }
+?>
 </div>
 </br></br>
 <?php print_footer(); ?>

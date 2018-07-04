@@ -11,7 +11,7 @@
 		die();
 	}
 	
-	if(isset($_POST["db"]["host"]) && isset($_POST["db"]["user"]) && isset($_POST["db"]["pass"]) && isset($_POST["db"]["name"])
+	if(isset($_POST["db"]["host"]) && isset($_POST["db"]["user"]) && isset($_POST["db"]["name"])
 	&& isset($_POST["user"]["name"]) && isset($_POST["user"]["alias"]) && isset($_POST["user"]["pass"]) && isset($_POST["user"]["pass2"]))
 	{
 		$pass = hash("sha256", $_POST["user"]["pass"]);
@@ -52,6 +52,8 @@
 				CREATE TABLE materie (
 				ID INT AUTO_INCREMENT PRIMARY KEY,
 				nome VARCHAR(64),
+				argomento VARCHAR(64),
+				immagine TEXT,
 				testo TEXT);
 				
 				CREATE TABLE rotori (
