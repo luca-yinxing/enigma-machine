@@ -11,7 +11,7 @@
 		die();
 	}
 	
-	if(isset($_POST["db"]["host"]) && isset($_POST["db"]["user"]) && isset($_POST["db"]["name"])
+	if(isset($_POST["db"]["host"]) && isset($_POST["db"]["user"]) && isset($_POST["db"]["pass"]) && isset($_POST["db"]["name"])
 	&& isset($_POST["user"]["name"]) && isset($_POST["user"]["alias"]) && isset($_POST["user"]["pass"]) && isset($_POST["user"]["pass2"]))
 	{
 		$pass = hash("sha256", $_POST["user"]["pass"]);
@@ -24,7 +24,7 @@
 		}
 		
 		$sql = "CREATE TABLE cifra (
-				ID INT AUTO_INCREMENT PRIMARY KEY,
+				ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 				posizione1 INT,
 				posizione2 INT,
 				posizione3 INT,
@@ -36,7 +36,7 @@
 				fk_sessione INT);
 				
 				CREATE TABLE commenti (
-				ID INT AUTO_INCREMENT PRIMARY KEY,
+				ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 				testo VARCHAR(512),
 				data INT,
 				fk_utenti INT,
@@ -44,29 +44,29 @@
 				fk_genitore INT);
 				
 				CREATE TABLE immagini (
-				ID INT AUTO_INCREMENT PRIMARY KEY,
+				ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 				link TEXT,
 				ordine INT,
 				fk_materie INT);
 				
 				CREATE TABLE materie (
-				ID INT AUTO_INCREMENT PRIMARY KEY,
+				ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 				nome VARCHAR(64),
 				argomento VARCHAR(64),
 				immagine TEXT,
 				testo TEXT);
 				
 				CREATE TABLE rotori (
-				ID INT AUTO_INCREMENT PRIMARY KEY,
+				ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 				valore CHAR(26),
 				nome TEXT);
 				
 				CREATE TABLE sessione (
-				ID INT AUTO_INCREMENT PRIMARY KEY,
+				ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 				data TIMESTAMP);
 				
 				CREATE TABLE utenti (
-				ID INT AUTO_INCREMENT PRIMARY KEY,
+				ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 				alias VARCHAR(64),
 				pass CHAR(64),
 				nome VARCHAR(64),
