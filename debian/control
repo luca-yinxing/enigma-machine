@@ -8,7 +8,7 @@ Homepage: https://www.xsoftware.it
 
 Package: lucagasperini-esame
 Architecture: all
-Depends: odoo
+Depends: php
 Description: An Enigma Machine simulator written in PHP and HTML.
    Enigma was a machine for encrypt and decrypt messages, 
    it was used in the WW2 by the Axis.
