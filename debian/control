@@ -1,0 +1,16 @@
+Source: lucagasperini-esame
+Section: web
+Priority: optional
+Maintainer: Luca Gasperini <luca.gasperini@xsoftware.it>
+Build-Depends: debhelper (>= 9)
+Standards-Version: 4.3.0
+Homepage: https://www.xsoftware.it
+
+Package: lucagasperini-esame
+Architecture: all
+Depends: odoo
+Description: An Enigma Machine simulator written in PHP and HTML.
+   Enigma was a machine for encrypt and decrypt messages, 
+   it was used in the WW2 by the Axis.
+
+
